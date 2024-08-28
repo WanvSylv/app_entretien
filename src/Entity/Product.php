@@ -20,7 +20,7 @@ class Product
     #[ORM\Column]
     private ?float $priceHt = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateUpdate = null;
 
     public function getId(): ?int
