@@ -10,7 +10,7 @@ use App\Entity\Product;
 use App\Form\ProductType;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ProductRepository;
-use Datetime;
+use DateTime;
 
 class ProductController extends AbstractController
 {
@@ -28,23 +28,51 @@ class ProductController extends AbstractController
     {
         $product = new Product();
 
-        // Création du formulaire
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 
-        // Traitement du formulaire
         if ($form->isSubmitted() && $form->isValid()) {
-            // Enregistrement du produit dans la base de données
-            $product->setCreationDate(new \Datetime());
+            $product->setCreationDate(new DateTime());
             $entityManager->persist($product);
             $entityManager->flush();
 
-            // Redirection après l'enregistrement
             return $this->redirectToRoute('app_product_index');
         }
 
         return $this->render('product/new.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    #[Route('/product/{id}/edit', name: 'app_product_edit')]
+    public function edit(Request $request, Product $product, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(ProductType::class, $product);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $product->setDateUpdate(new DateTime());
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_product_index');
+        }
+
+        return $this->render('product/edit.html.twig', [
+            'form' => $form->createView(),
+            'product' => $product,
+        ]);
+    }
+
+    #[Route('/product/{id}/delete', name: 'app_product_delete', methods: ['POST'])]
+    public function delete(Request $request, Product $product, EntityManagerInterface $entityManager): Response
+    {
+        // Vérification du token CSRF pour sécuriser la suppression
+        if ($this->isCsrfTokenValid('delete'.$product->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($product);
+            $entityManager->flush();
+        }
+
+        // Redirection après suppression
+        return $this->redirectToRoute('app_product_index');
     }
 }

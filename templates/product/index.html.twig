@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %} Product{% endblock %}
+{% block title %}Product{% endblock %}
 
 {% block body %}
 
@@ -17,18 +17,22 @@
                 <th>Price</th>
                 <th>Date creation</th>
                 <th>Date update</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            {%for product in products%}
+            {% for product in products %}
             <tr>
-                <td>{{loop.index}}</td>
-                <td>{{product.name}}</td>
-                <td>{{product.priceHt}}</td>
-                <td>{{product.creationDate | date('d/m/Y H:i:s')}}</td>
-                <td>{{product.dateUpdate  | date('d/m/Y H:i:s')}}</td>
+                <td>{{ loop.index }}</td>
+                <td>{{ product.name }}</td>
+                <td>{{ product.priceHt }}</td>
+                <td>{{ product.creationDate | date('d/m/Y H:i:s') }}</td>
+                <td>{{ product.dateUpdate | date('d/m/Y H:i:s') }}</td>
+                <td>
+                    <a href="{{ path('app_product_edit', {'id': product.id}) }}">Editer</a>
+                </td>
             </tr>
-            {%endfor%}
+            {% endfor %}
         </tbody>
     </table>
 </div>
