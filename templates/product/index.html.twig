@@ -22,14 +22,21 @@
         </thead>
         <tbody>
             {% for product in products %}
-            <tr>
+            <tr class="table">
                 <td>{{ loop.index }}</td>
                 <td>{{ product.name }}</td>
                 <td>{{ product.priceHt }}</td>
                 <td>{{ product.creationDate | date('d/m/Y H:i:s') }}</td>
                 <td>{{ product.dateUpdate | date('d/m/Y H:i:s') }}</td>
                 <td>
-                    <a href="{{ path('app_product_edit', {'id': product.id}) }}">Editer</a>
+                    <!-- Bouton Editer -->
+                    <a class="btn btn-primary" href="{{ path('app_product_edit', {'id': product.id}) }} ">Éditer</a>
+
+                    <!-- Formulaire de suppression -->
+                    <form method="post" action="{{ path('app_product_delete', {'id': product.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');" style="display:inline;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ product.id) }}">
+                        <button class="btn btn-danger" >Supprimer</button>
+                    </form>
                 </td>
             </tr>
             {% endfor %}
